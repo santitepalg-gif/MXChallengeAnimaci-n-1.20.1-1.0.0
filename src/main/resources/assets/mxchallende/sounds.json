@@ -1,0 +1,7 @@
+{
+  "reviil": {
+    "category": "voice",
+    "subtitle": "mxchallende.subtitle.reviil",
+    "sounds": [ { "name": "mxchallende:reviil", "stream": false } ]
+  }
+}

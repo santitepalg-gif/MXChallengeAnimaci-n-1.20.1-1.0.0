@@ -1,0 +1,28 @@
+modLoader = "javafml"
+loaderVersion = "[47,)"
+license = "All Rights Reserved"
+
+[[mods]]
+modId = "mxchallende"
+version = "${mod_version}"
+displayName = "MXCHALLENDE Dificultad"
+logoFile = "logo.png"
+description = '''
+Conversión a mod del datapack MXCHALLENDE: al morir un jugador pasa a espectador,
+se avisa en el chat, suena "reviil" y aparece la calavera con animación épica.
+También se puede lanzar a mano con /mxchallende preview.
+'''
+
+[[dependencies.mxchallende]]
+modId = "forge"
+mandatory = true
+versionRange = "[47,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.mxchallende]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.1,1.21)"
+ordering = "NONE"
+side = "BOTH"

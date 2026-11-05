@@ -1,0 +1,65 @@
+name: Build mod
+
+on:
+  push:
+    branches: [ main, master ]
+    tags: [ 'v*' ]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      # Gradle 8.1.1 = el que usa ForgeGradle 6 en 1.20.1 (no hace falta subir el wrapper).
+      # Este paso también cachea las descargas de Forge/Minecraft para que los builds siguientes sean más rápidos.
+      - name: Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.1.1
+
+      - name: Build
+        run: gradle build --no-daemon
+
+      - name: Subir .jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: mxchallende-jar
+          path: build/libs/*.jar
+          if-no-files-found: error
+
+  release:
+    # Solo al subir un tag, ej: git tag v1.0.1 && git push --tags
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Descargar .jar
+        uses: actions/download-artifact@v4
+        with:
+          name: mxchallende-jar
+          path: dist
+
+      - name: Crear release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.jar
+          generate_release_notes: true
